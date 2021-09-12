@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Storage;
 
 // This example code shows how you could implement the required main function for a 
 // Console UWP Application. You can replace all the code inside Main with your own custom code.
@@ -15,7 +16,7 @@ namespace sqlitiamo
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Hello - no args");
+                ControlCenter();
             }
             else
             {
@@ -24,8 +25,133 @@ namespace sqlitiamo
                     Console.WriteLine($"arg[{i}] = {args[i]}");
                 }
             }
-            Console.WriteLine("Press a key to continue: ");
-            Console.ReadLine();
+        }
+
+        static void ControlCenter()
+        {
+            GetHelp();
+            string input;
+            input = Console.ReadLine();
+
+            while (!input.Equals("quit"))
+            {
+                if (input.Equals("ls"))
+                {
+                    ListDBs();
+                }
+                else if (input.Equals("help"))
+                {
+                    GetHelp();
+                }
+                else if (input.Equals(""))
+                {
+                    // do nothing
+                }
+                else
+                {
+                    ControlArgument(input);
+                }
+
+                input = Console.ReadLine();
+            }
+        }
+
+        static void ControlArgument(string input)
+        {
+            string[] cmd = input.Split(' ');
+
+            if (cmd[0].Equals("create"))
+            {
+                CreateDB(cmd[1]);
+            }
+            else if (cmd[0].Equals("rm"))
+            {
+                RemoveDB(cmd[1]);
+            }
+            else if (cmd[0].Equals("use"))
+            {
+                ChooseDB(cmd[1]);
+            }
+            else
+            {
+                GetHelp();
+            }
+        }
+
+        //-----------------------------------------------------------------------
+
+        static async void ListDBs()
+        {
+            var dbs = await ApplicationData.Current.LocalCacheFolder.GetFilesAsync();
+            if (dbs.Count != 0)
+            {
+                foreach (var db in dbs)
+                {
+                    if (db.FileType.Equals(".db"))
+                        Console.WriteLine($"\t{db.DisplayName}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\tno database here, maybe create one");
+            }
+        }
+
+        static async void CreateDB(string name)
+        {
+            try
+            {
+                await ApplicationData.Current.LocalCacheFolder.CreateFileAsync(name + ".db");
+                Console.WriteLine($"\tthere will be database {name}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\tException: {ex.Message}");
+            }
+        }
+
+        static async void RemoveDB(string name)
+        {
+            try
+            {
+                Console.Write($"Do you want to remove the database {name}?(y/n)");
+                var confirm = Console.ReadKey();
+                if (confirm.Key != ConsoleKey.N)
+                {
+                    await (await ApplicationData.Current.LocalCacheFolder.GetFileAsync(name + ".db")).DeleteAsync();
+                    Console.WriteLine($"\n\tdatabase {name}'s gone");
+                }
+                else
+                {
+                    Console.Write("\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\n\tException: {ex.Message}");
+            }
+        }
+
+        static void ChooseDB(string name)
+        {
+             new DataStorage(name);
+        }
+
+        //-----------------------------------------------------------------------
+
+        static void GetHelp()
+        {
+            Console.WriteLine("sqlitiamo = sqlite ti amo = we sqlite");
+            Console.WriteLine("Commands in app");
+            Console.WriteLine("\tls\tlist user-friendly names of your databases");
+            Console.WriteLine("\tcreate\tcreate a new database with specific name");
+            Console.WriteLine("\trm\tremove the database with specific name");
+            Console.WriteLine("\tuse\tuse and open the database with specific name");
+            Console.WriteLine("\tquit\texit this app");
+            Console.WriteLine("\thelp\tshow this text");
+            Console.WriteLine("Commands in database");
+            Console.WriteLine("\tclose\tclose the current database");
+            Console.WriteLine("you can execute sql commands directly in database\n");
         }
     }
 }
