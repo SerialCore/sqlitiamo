@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
 // This example code shows how you could implement the required main function for a 
@@ -42,7 +43,7 @@ namespace sqlitiamo
                 }
                 else if (input.Equals("explore"))
                 {
-                    Console.WriteLine($"\t{ApplicationData.Current.LocalCacheFolder.Path}");
+                    GetPath();
                 }
                 else if (input.Equals("help"))
                 {
@@ -93,26 +94,44 @@ namespace sqlitiamo
 
             while (!command.Equals("close"))
             {
-                if (command.StartsWith("create") || command.StartsWith("drop") || command.StartsWith("insert")
-                    || command.StartsWith("delete") || command.StartsWith("update") || command.StartsWith("alter"))
+                if (command.StartsWith("create", StringComparison.CurrentCultureIgnoreCase)
+                    || command.StartsWith("drop", StringComparison.CurrentCultureIgnoreCase)
+                    || command.StartsWith("insert", StringComparison.CurrentCultureIgnoreCase)
+                    || command.StartsWith("delete", StringComparison.CurrentCultureIgnoreCase)
+                    || command.StartsWith("update", StringComparison.CurrentCultureIgnoreCase)
+                    || command.StartsWith("alter", StringComparison.CurrentCultureIgnoreCase))
                 {
                     int rows = database.ExecuteWrite(command);
                     Console.WriteLine($"\t{rows} rows are affected");
                 }
-                else if (command.StartsWith("select"))
+                else if (command.StartsWith("select", StringComparison.CurrentCultureIgnoreCase))
                 {
                     var reader = database.ExecuteRead(command);
                     if (reader != null)
                     {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            Console.Write($"\t{reader.GetName(i)}");
+                        }
+                        Console.Write("\n");
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            Console.Write($"\t------");
+                        }
+                        Console.Write("\n");
+
+                        int index = 1;
                         while (reader.Read())
                         {
-                            object[] values = new object[reader.GetSchemaTable().Columns.Count]; // not the real count
-                            reader.GetValues(values);
-                            foreach (var item in values)
-                                if (item != null)
-                                    Console.Write($"\t{item.ToString()}");
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                Console.Write($"\t{reader[i].ToString()}");
+                            }
                             Console.Write("\n");
+                            index++;
                         }
+                        reader.Close();
                     }
                 }
                 else
@@ -123,6 +142,8 @@ namespace sqlitiamo
                 Console.Write($"{database.Database}@ ");
                 command = Console.ReadLine();
             }
+
+            database.Close();
         }
 
         //-----------------------------------------------------------------------
@@ -185,6 +206,12 @@ namespace sqlitiamo
         }
 
         //-----------------------------------------------------------------------
+
+        static void GetPath()
+        {
+            string path = ApplicationData.Current.LocalCacheFolder.Path;
+            Console.WriteLine($"\t{path}");
+        }
 
         static void GetHelp()
         {

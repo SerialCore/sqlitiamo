@@ -10,19 +10,13 @@ namespace sqlitiamo
         {
             this._dbname = dbname;
             this._dbpath = ApplicationData.Current.LocalCacheFolder.Path + "\\" + dbname + ".db";
+            this._conn = new SqliteConnection(string.Format("Data Source={0};", this._dbpath));
+            this._conn.Open();
         }
 
         private string _dbname;
         private string _dbpath;
-        private SqliteConnection _conn
-        {
-            get
-            {
-                var con = new SqliteConnection(string.Format("Data Source={0};", this._dbpath));
-                con.Open();
-                return con;
-            }
-        }
+        private SqliteConnection _conn;
 
         public string Database => _dbname;
 
@@ -41,9 +35,6 @@ namespace sqlitiamo
                 Console.WriteLine($"\tSqliteException: {ex.Message}");
             }
 
-            _conn.Close();
-            _conn.Dispose();
-
             return affectedRows;
         }
 
@@ -52,21 +43,21 @@ namespace sqlitiamo
             try
             {
                 SqliteDataReader reader = new SqliteCommand(sql, _conn).ExecuteReader();
-
-                _conn.Close();
-                _conn.Dispose();
-
+                
                 return reader;
             }
             catch (SqliteException ex)
             {
                 Console.WriteLine($"\tSqliteException: {ex.Message}");
-
-                _conn.Close();
-                _conn.Dispose();
-
+                
                 return null;
             }
+        }
+
+        public void Close()
+        {
+            _conn.Close();
+            _conn.Dispose();
         }
 
     }
