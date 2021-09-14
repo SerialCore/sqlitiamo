@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
-using System.Data;
 using Windows.Storage;
 
 namespace sqlitiamo

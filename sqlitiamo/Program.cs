@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using Windows.Storage;
 
 // This example code shows how you could implement the required main function for a 
@@ -39,6 +40,10 @@ namespace sqlitiamo
                 {
                     ListDBs();
                 }
+                else if (input.Equals("explore"))
+                {
+                    Console.WriteLine($"\t{ApplicationData.Current.LocalCacheFolder.Path}");
+                }
                 else if (input.Equals("help"))
                 {
                     GetHelp();
@@ -75,6 +80,48 @@ namespace sqlitiamo
             else
             {
                 GetHelp();
+            }
+        }
+
+        static void ControlSQL(string name)
+        {
+            var database = new DataStorage(name);
+
+            Console.Write($"{database.Database}@ ");
+            string command;
+            command = Console.ReadLine();
+
+            while (!command.Equals("close"))
+            {
+                if (command.StartsWith("create") || command.StartsWith("drop") || command.StartsWith("insert")
+                    || command.StartsWith("delete") || command.StartsWith("update") || command.StartsWith("alter"))
+                {
+                    int rows = database.ExecuteWrite(command);
+                    Console.WriteLine($"\t{rows} rows are affected");
+                }
+                else if (command.StartsWith("select"))
+                {
+                    var reader = database.ExecuteRead(command);
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            object[] values = new object[reader.GetSchemaTable().Columns.Count]; // not the real count
+                            reader.GetValues(values);
+                            foreach (var item in values)
+                                if (item != null)
+                                    Console.Write($"\t{item.ToString()}");
+                            Console.Write("\n");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\tundefined command detected");
+                }
+
+                Console.Write($"{database.Database}@ ");
+                command = Console.ReadLine();
             }
         }
 
@@ -134,7 +181,7 @@ namespace sqlitiamo
 
         static void ChooseDB(string name)
         {
-             new DataStorage(name);
+            ControlSQL(name);
         }
 
         //-----------------------------------------------------------------------
@@ -144,6 +191,7 @@ namespace sqlitiamo
             Console.WriteLine("sqlitiamo = sqlite ti amo = we sqlite");
             Console.WriteLine("Commands in app");
             Console.WriteLine("\tls\tlist user-friendly names of your databases");
+            Console.WriteLine("\texplore\texplore the folder of databases");
             Console.WriteLine("\tcreate\tcreate a new database with specific name");
             Console.WriteLine("\trm\tremove the database with specific name");
             Console.WriteLine("\tuse\tuse and open the database with specific name");
@@ -151,7 +199,7 @@ namespace sqlitiamo
             Console.WriteLine("\thelp\tshow this text");
             Console.WriteLine("Commands in database");
             Console.WriteLine("\tclose\tclose the current database");
-            Console.WriteLine("you can execute sql commands directly in database\n");
+            Console.WriteLine("\tyou can execute sql commands directly in database\n");
         }
     }
 }
