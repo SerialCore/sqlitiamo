@@ -12,7 +12,7 @@
   <Identity
     Name="16496zhwx.sqlitiamo"
     Publisher="CN=73D1BF38-7322-4954-A5E9-541DD3BC2D66"
-    Version="1.0.0.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="77c27391-b87e-4f7c-8eee-897ef959c578" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -48,7 +48,12 @@
         <uap:DefaultTile 
           Wide310x150Logo="Assets\Wide310x150Logo.png" 
           Square310x310Logo="Assets\Square310x310Logo.png" 
-          Square71x71Logo="Assets\Square71x71Logo.png">
+          Square71x71Logo="Assets\Square71x71Logo.png" ShortName="sqlitiamo">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
