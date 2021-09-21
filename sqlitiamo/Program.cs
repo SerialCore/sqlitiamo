@@ -45,6 +45,10 @@ namespace sqlitiamo
                 {
                     GetPath();
                 }
+                else if (input.Equals("clear"))
+                {
+                    ConsoleClear();
+                }
                 else if (input.Equals("help"))
                 {
                     GetHelp();
@@ -207,6 +211,11 @@ namespace sqlitiamo
 
         //-----------------------------------------------------------------------
 
+        static void ConsoleClear()
+        {
+            Console.Clear();
+        }
+
         static void GetPath()
         {
             string path = ApplicationData.Current.LocalCacheFolder.Path;
@@ -222,6 +231,7 @@ namespace sqlitiamo
             Console.WriteLine("\tcreate\tcreate a new database with specific name");
             Console.WriteLine("\trm\tremove the database with specific name");
             Console.WriteLine("\tuse\tuse and open the database with specific name");
+            Console.WriteLine("\tclear\tclear the console");
             Console.WriteLine("\tquit\texit this app");
             Console.WriteLine("\thelp\tshow this text");
             Console.WriteLine("Commands in database");

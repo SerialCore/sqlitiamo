@@ -35,7 +35,7 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateThumbprint>500160B225D2E4AFFB8D8E3B5C500CD7D4DDB606</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>A32D0C7D36C3F1ED9E4FFA3A0AE42D6D9B359D1F</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -119,6 +119,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="certification.pfx" />
     <None Include="sqlitiamo_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
