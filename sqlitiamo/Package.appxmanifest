@@ -12,13 +12,13 @@
   <Identity
     Name="16496zhwx.sqlitiamo"
     Publisher="CN=73D1BF38-7322-4954-A5E9-541DD3BC2D66"
-    Version="1.0.6.0" />
+    Version="1.0.8.0" />
 
   <mp:PhoneIdentity PhoneProductId="77c27391-b87e-4f7c-8eee-897ef959c578" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>sqlitiamo</DisplayName>
-    <PublisherDisplayName>Serial Core Studio</PublisherDisplayName>
+    <PublisherDisplayName>SerialCore</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
